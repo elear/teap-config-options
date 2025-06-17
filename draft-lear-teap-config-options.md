@@ -1,7 +1,7 @@
 ---
-title: "TODO - Your title"
-abbrev: "TODO - Abbreviation"
-category: info
+title: "New TEAP TLV for Encapsulating DHCPv6 Options"
+abbrev: "TEAP DHCPv6 TLV"
+category: std
 
 docname: draft-lear-teap-config-options-latest
 submissiontype: IETF  # also: "independent", "editorial", "IAB", or "IRTF"
@@ -9,19 +9,22 @@ number:
 date:
 consensus: true
 v: 3
-# area: AREA
-# workgroup: WG Working Group
+
+area: Security
+workgroup: EMU Working Group
+
 keyword:
- - next generation
- - unicorn
- - sparkling distributed ledger
+  - TEAP
+  - TLV
+  - DHCP
+  - Authentication
 venue:
-#  group: WG
-#  type: Working Group
-#  mail: WG@example.com
-#  arch: https://example.com/WG
-  github: "elear/teap-config-options"
-  latest: "https://elear.github.io/teap-config-options/draft-lear-teap-config-options.html"
+  group: EMU WG
+  type: Working Group
+  mail: emu@ietf.org
+  arch: https://example.com/WG
+  github: elear/draft-lear-teap-config-option
+  latest: https://ofcourseimright.com/draft-lear-teap-config-option/LATEST
 
 author:
  -
