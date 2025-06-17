@@ -27,7 +27,7 @@ venue:
   latest: https://elear.github.io/draft-lear-teap-config-option/LATEST
 
 author:
- -
+  -
     ins: E. Lear
     name: Eliot Lear
     org: Cisco Ssytes, Inc.
