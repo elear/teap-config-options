@@ -24,7 +24,7 @@ venue:
   mail: emu@ietf.org
   arch: https://example.com/WG
   github: elear/draft-lear-teap-config-option
-  latest: https://elear.github.io/draft-lear-teap-config-option
+  latest: https://elear.github.io/teap-config-options/main/draft-lear-teap-config-options.html
 
 author:
   -
