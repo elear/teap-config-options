@@ -19,29 +19,30 @@
 # Change the file extension to match the format (.xml for XML, etc...)
 #
 ###
-title: "TODO - Your title"
-abbrev: "TODO - Abbreviation"
-category: info
+title: "New TEAP TLV for Encapsulating DHCPv6 Options"
+abbrev: "TEAP DHCPv6 TLV"
+category: std
 
-docname: draft-todo-yourname-protocol-latest
+docname: draft-lear-teap-config-options-latest
 submissiontype: IETF  # also: "independent", "editorial", "IAB", or "IRTF"
 number:
 date:
 consensus: true
 v: 3
-area: AREA
-workgroup: WG Working Group
+area: Security
+workgroup: EMU Working Group
 keyword:
- - next generation
- - unicorn
- - sparkling distributed ledger
+  - TEAP
+  - TLV
+  - DHCP
+  - Authentication
 venue:
-  group: WG
+  group: EMU WG
   type: Working Group
-  mail: WG@example.com
+  mail: emu@ietf.org
   arch: https://example.com/WG
-  github: USER/REPO
-  latest: https://example.com/LATEST
+  github: elear/draft-lear-teap-config-option
+  latest: https://ofcourseimright.com/draft-lear-teap-config-option/LATEST
 
 author:
  -
