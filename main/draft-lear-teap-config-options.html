@@ -6,8 +6,14 @@
 <meta content="initial-scale=1.0" name="viewport">
 <title>New TEAP TLV for Encapsulating DHCPv6 Options</title>
 <meta content="Eliot Lear" name="author">
+<meta content="Alan Dekok" name="author">
 <meta content="
-       TODO Abstract 
+       This document defines a new Tunneled Extensible Authentication
+Protocol (TEAP) Type-Length-Value (TLV) to encapsulate DHCPv6 (Dynamic
+Host Configuration Protocol Version 6) options within TEAP
+authentication exchanges. This enhancement enables exchange
+of network configuration parameters after the authentication
+phase. 
     " name="description">
 <meta content="xml2rfc 3.28.1" name="generator">
 <meta content="TEAP" name="keyword">
@@ -1050,7 +1056,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <td class="right">June 2025</td>
 </tr></thead>
 <tfoot><tr>
-<td class="left">Lear</td>
+<td class="left">Lear &amp; Dekok</td>
 <td class="center">Expires 19 December 2025</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
@@ -1070,11 +1076,15 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
 <dd class="expires"><time datetime="2025-12-19">19 December 2025</time></dd>
-<dt class="label-authors">Author:</dt>
+<dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
       <div class="author-name">E. Lear</div>
-<div class="org">Your Organization Here</div>
+<div class="org">Cisco Ssytes, Inc.</div>
+</div>
+<div class="author">
+      <div class="author-name">A. Dekok</div>
+<div class="org">InkBridge Networks</div>
 </div>
 </dd>
 </dl>
@@ -1082,7 +1092,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <h1 id="title">New TEAP TLV for Encapsulating DHCPv6 Options</h1>
 <section id="section-abstract">
       <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
-<p id="section-abstract-1">TODO Abstract<a href="#section-abstract-1" class="pilcrow">¶</a></p>
+<p id="section-abstract-1">This document defines a new Tunneled Extensible Authentication
+Protocol (TEAP) Type-Length-Value (TLV) to encapsulate DHCPv6 (Dynamic
+Host Configuration Protocol Version 6) options within TEAP
+authentication exchanges. This enhancement enables exchange
+of network configuration parameters after the authentication
+phase.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
 </section>
 <section class="note rfcEditorRemove" id="section-note.1">
       <h2 id="name-about-this-document">
@@ -1150,24 +1165,48 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <nav class="toc"><ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1">
             <p id="section-toc.1-1.1.1" class="keepWithNext"><a href="#section-1" class="auto internal xref">1</a>.  <a href="#name-introduction" class="internal xref">Introduction</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.1">
+                <p id="section-toc.1-1.1.2.1.1" class="keepWithNext"><a href="#section-1.1" class="auto internal xref">1.1</a>.  <a href="#name-use-of-both-dhcpv6-and-teap" class="internal xref">Use of both DHCPv6 and TEAP protocols</a></p>
+</li>
+            </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2">
-            <p id="section-toc.1-1.2.1" class="keepWithNext"><a href="#section-2" class="auto internal xref">2</a>.  <a href="#name-conventions-and-definitions" class="internal xref">Conventions and Definitions</a></p>
+            <p id="section-toc.1-1.2.1"><a href="#section-2" class="auto internal xref">2</a>.  <a href="#name-teap-tlv-for-dhcpv6-options" class="internal xref">TEAP TLV for DHCPv6 Options</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.1">
+                <p id="section-toc.1-1.2.2.1.1" class="keepWithNext"><a href="#section-2.1" class="auto internal xref">2.1</a>.  <a href="#name-tlv-format" class="internal xref">TLV Format</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.2">
+                <p id="section-toc.1-1.2.2.2.1"><a href="#section-2.2" class="auto internal xref">2.2</a>.  <a href="#name-dhcpv6-option-encapsulation" class="internal xref">DHCPv6 Option Encapsulation</a></p>
+</li>
+            </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3">
-            <p id="section-toc.1-1.3.1" class="keepWithNext"><a href="#section-3" class="auto internal xref">3</a>.  <a href="#name-security-considerations" class="internal xref">Security Considerations</a></p>
+            <p id="section-toc.1-1.3.1"><a href="#section-3" class="auto internal xref">3</a>.  <a href="#name-security-considerations" class="internal xref">Security Considerations</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4">
             <p id="section-toc.1-1.4.1"><a href="#section-4" class="auto internal xref">4</a>.  <a href="#name-iana-considerations" class="internal xref">IANA Considerations</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5">
-            <p id="section-toc.1-1.5.1"><a href="#section-5" class="auto internal xref">5</a>.  <a href="#name-normative-references" class="internal xref">Normative References</a></p>
+            <p id="section-toc.1-1.5.1"><a href="#section-5" class="auto internal xref">5</a>.  <a href="#name-acknowledgements" class="internal xref">Acknowledgements</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6">
-            <p id="section-toc.1-1.6.1"><a href="#appendix-A" class="auto internal xref"></a><a href="#name-acknowledgments" class="internal xref">Acknowledgments</a></p>
+            <p id="section-toc.1-1.6.1"><a href="#section-6" class="auto internal xref">6</a>.  <a href="#name-references" class="internal xref">References</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.1">
+                <p id="section-toc.1-1.6.2.1.1"><a href="#section-6.1" class="auto internal xref">6.1</a>.  <a href="#name-normative-references" class="internal xref">Normative References</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.2">
+                <p id="section-toc.1-1.6.2.2.1"><a href="#section-6.2" class="auto internal xref">6.2</a>.  <a href="#name-informative-references" class="internal xref">Informative References</a></p>
+</li>
+            </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7">
-            <p id="section-toc.1-1.7.1"><a href="#appendix-B" class="auto internal xref"></a><a href="#name-authors-address" class="internal xref">Author's Address</a></p>
+            <p id="section-toc.1-1.7.1"><a href="#appendix-A" class="auto internal xref"></a><a href="#name-acknowledgments" class="internal xref">Acknowledgments</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8">
+            <p id="section-toc.1-1.8.1"><a href="#appendix-B" class="auto internal xref"></a><a href="#name-authors-addresses" class="internal xref">Authors' Addresses</a></p>
 </li>
         </ul>
 </nav>
@@ -1178,18 +1217,171 @@ svg :is([fill="white"], [fill^="#fff"]) {
       <h2 id="name-introduction">
 <a href="#section-1" class="section-number selfRef">1. </a><a href="#name-introduction" class="section-name selfRef">Introduction</a>
       </h2>
-<p id="section-1-1">TODO Introduction<a href="#section-1-1" class="pilcrow">¶</a></p>
+<p id="section-1-1">TEAP (Tunneled Extensible Authentication Protocol), defined in
+<span>[<a href="#RFC7170" class="cite xref">RFC7170</a>]</span>, supports the use of Type-Length-Value (TLV) structures
+to exchange additional data during the authentication process. DHCPv6
+<span>[<a href="#RFC8415" class="cite xref">RFC8415</a>]</span> is widely used for configuration of network
+parameters. This document introduces a new TLV to encapsulate DHCPv6
+options within TEAP messages.<a href="#section-1-1" class="pilcrow">¶</a></p>
+<p id="section-1-2"><span>[<a href="#RFC9445" class="cite xref">RFC9445</a>]</span> specifies a way to communicate options to a radius
+client.  This memo specifies a means to communicate options
+end-to-end between the authentication server and the peer.<a href="#section-1-2" class="pilcrow">¶</a></p>
+<p id="section-1-3">Not all DHCP communications will necessarily make sense in this
+context.  For instance, a AAA server may only wish to send
+non-topological options, such as a print server, or next hop
+configuration URL, and it might not send next-hop router or
+IP address binding information.<a href="#section-1-3" class="pilcrow">¶</a></p>
+<div id="use-of-both-dhcpv6-and-teap-protocols">
+<section id="section-1.1">
+        <h3 id="name-use-of-both-dhcpv6-and-teap">
+<a href="#section-1.1" class="section-number selfRef">1.1. </a><a href="#name-use-of-both-dhcpv6-and-teap" class="section-name selfRef">Use of both DHCPv6 and TEAP protocols</a>
+        </h3>
+<p id="section-1.1-1">Because DHCPv6 is widely deployed, peers implementing this specifciation
+can expect to receive information via TEAP and DHCPv6.  Thereefore, the
+possibility of a conflict arises.  Clients are not in a good position to
+determine on their own which information is correct.  Therefore, the
+following strategy is RECOMMENDED:<a href="#section-1.1-1" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-1.1-2">
+<li id="section-1.1-2.1">
+            <p id="section-1.1-2.1.1">Peers receiving information only via DHCP will use that information.<a href="#section-1.1-2.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li id="section-1.1-2.2">
+            <p id="section-1.1-2.2.1">Peers receiving DHCP information only via TEAP will use that information.<a href="#section-1.1-2.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li id="section-1.1-2.3">
+            <p id="section-1.1-2.3.1">Peers receiving overlapping DHCPv6 options SHOULD select TEAP information
+since it is likely to be better authenticated and unchanged.<a href="#section-1.1-2.3.1" class="pilcrow">¶</a></p>
+</li>
+          <li id="section-1.1-2.4">
+            <p id="section-1.1-2.4.1">If conflicting information is received by the peer it SHOULD log the
+conflict as an error and MAY produce an exception.<a href="#section-1.1-2.4.1" class="pilcrow">¶</a></p>
+</li>
+        </ol>
 </section>
 </div>
-<div id="conventions-and-definitions">
+</section>
+</div>
+<div id="teap-tlv-for-dhcpv6-options">
 <section id="section-2">
-      <h2 id="name-conventions-and-definitions">
-<a href="#section-2" class="section-number selfRef">2. </a><a href="#name-conventions-and-definitions" class="section-name selfRef">Conventions and Definitions</a>
+      <h2 id="name-teap-tlv-for-dhcpv6-options">
+<a href="#section-2" class="section-number selfRef">2. </a><a href="#name-teap-tlv-for-dhcpv6-options" class="section-name selfRef">TEAP TLV for DHCPv6 Options</a>
       </h2>
-<p id="section-2-1">The key words "<span class="bcp14">MUST</span>", "<span class="bcp14">MUST NOT</span>", "<span class="bcp14">REQUIRED</span>", "<span class="bcp14">SHALL</span>", "<span class="bcp14">SHALL NOT</span>", "<span class="bcp14">SHOULD</span>", "<span class="bcp14">SHOULD NOT</span>", "<span class="bcp14">RECOMMENDED</span>", "<span class="bcp14">NOT RECOMMENDED</span>",
-"<span class="bcp14">MAY</span>", and "<span class="bcp14">OPTIONAL</span>" in this document are to be interpreted as
-described in BCP 14 <span>[<a href="#RFC2119" class="cite xref">RFC2119</a>]</span> <span>[<a href="#RFC8174" class="cite xref">RFC8174</a>]</span> when, and only when, they
-appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶</a></p>
+<p id="section-2-1">Both the TEAP server and TEAP client MAY transmit this TLV during
+Phase 2, and it MAY be included in a Request Action frame.  The
+Mandatory bit MUST not be set.  If either side sends this TLV prior
+to Phase 2, an error TLV of 2002 (Unexpected TLVs Exchanged)
+be returned with a Result of Status=Failure.  That is, the table
+in Section 4.3.1 of <span>[<a href="#I-D.ietf-emu-rfc7170bis" class="cite xref">I-D.ietf-emu-rfc7170bis</a>]</span> remains unchanged.<a href="#section-2-1" class="pilcrow">¶</a></p>
+<p id="section-2-2">Thus this TLV MAY be used as follows:<a href="#section-2-2" class="pilcrow">¶</a></p>
+<span id="name-when-is-this-tlv-allowed"></span><div id="tabAllowed">
+<table class="center" id="table-1">
+        <caption>
+<a href="#table-1" class="selfRef">Table 1</a>:
+<a href="#name-when-is-this-tlv-allowed" class="selfRef">When is this TLV Allowed</a>
+        </caption>
+<thead>
+          <tr>
+            <th class="text-left" rowspan="1" colspan="1">Request</th>
+            <th class="text-left" rowspan="1" colspan="1">Response</th>
+            <th class="text-left" rowspan="1" colspan="1">Success</th>
+            <th class="text-left" rowspan="1" colspan="1">Failure</th>
+            <th class="text-left" rowspan="1" colspan="1">TLV</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">0+</td>
+            <td class="text-left" rowspan="1" colspan="1">0+</td>
+            <td class="text-left" rowspan="1" colspan="1">0+</td>
+            <td class="text-left" rowspan="1" colspan="1">0</td>
+            <td class="text-left" rowspan="1" colspan="1">DHCPv6 options</td>
+          </tr>
+        </tbody>
+      </table>
+</div>
+<p id="section-2-4">A TEAP peer or server receiving this TLV SHOULD NOT act on it until
+the other side has been sufficiently authenticated, but it is not an
+error to send this TLV in advance of such authentication.  In this
+way, the TLV can be conveniently piggybacked as part of the
+authentication prior to a result or intermediate result being
+generated.<a href="#section-2-4" class="pilcrow">¶</a></p>
+<div id="tlv-format">
+<section id="section-2.1">
+        <h3 id="name-tlv-format">
+<a href="#section-2.1" class="section-number selfRef">2.1. </a><a href="#name-tlv-format" class="section-name selfRef">TLV Format</a>
+        </h3>
+<p id="section-2.1-1">The new TEAP TLV for DHCPv6 options is structured as follows:<a href="#section-2.1-1" class="pilcrow">¶</a></p>
+<span id="name-dhcp-options-tlv-format"></span><div id="packetform">
+<figure id="figure-1">
+          <div class="alignLeft art-text artwork" id="section-2.1-2.1">
+<pre>
+    0                   1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |M|R|         TLV Type          |            Length             |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |           DHCPv6 fields...
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
+
+</pre>
+</div>
+<figcaption><a href="#figure-1" class="selfRef">Figure 1</a>:
+<a href="#name-dhcp-options-tlv-format" class="selfRef">DHCP options TLV format</a>
+          </figcaption></figure>
+</div>
+<div class="alignLeft art-text artwork" id="section-2.1-3">
+<pre>
+   M
+
+      0 - Optional TLV
+
+   R
+
+      Reserved, set to zero (0)
+
+   TLV Type
+
+      TBD - DHCPv6 options
+
+   Length
+
+      &gt;=2 octets
+
+</pre><a href="#section-2.1-3" class="pilcrow">¶</a>
+</div>
+</section>
+</div>
+<div id="dhcpv6-option-encapsulation">
+<section id="section-2.2">
+        <h3 id="name-dhcpv6-option-encapsulation">
+<a href="#section-2.2" class="section-number selfRef">2.2. </a><a href="#name-dhcpv6-option-encapsulation" class="section-name selfRef">DHCPv6 Option Encapsulation</a>
+        </h3>
+<p id="section-2.2-1">The Value field encapsulates DHCPv6 options exactly as they appear in
+DHCPv6 messages. Multiple options can be included, concatenated
+sequentially, with no padding between them.<a href="#section-2.2-1" class="pilcrow">¶</a></p>
+<p id="section-2.2-2">The format adheres to the standard DHCPv6 option encoding, ensuring compatibility with existing DHCPv6 implementations.<a href="#section-2.2-2" class="pilcrow">¶</a></p>
+<p id="section-2.2-3">Encapsulating this option in the TLV would look as follows (in hexadecimal):<a href="#section-2.2-3" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-2.2-4">
+<pre>
+Type: 0xXXXX (assigned by IANA)
+Length: 0x0014
+Value: 0x00170010FE8000000000000000000000000001
+</pre><a href="#section-2.2-4" class="pilcrow">¶</a>
+</div>
+<p id="section-2.2-5">Where:<a href="#section-2.2-5" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-2.2-6.1">
+            <p id="section-2.2-6.1.1"><code>Type = 0xXXXX</code> (placeholder for the assigned type value)<a href="#section-2.2-6.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-2.2-6.2">
+            <p id="section-2.2-6.2.1"><code>Length = 0x0014</code> (20 bytes for the "Recursive DNS Servers" option, including addresses)<a href="#section-2.2-6.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-2.2-6.3">
+            <p id="section-2.2-6.3.1"><code>Value = 0x00170010FE8000000000000000000000000001</code> (DHCPv6 Option 23 with an IPv6 address of <code>FE80::1</code>).<a href="#section-2.2-6.3.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+</section>
+</div>
 </section>
 </div>
 <div id="security-considerations">
@@ -1197,7 +1389,9 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
       <h2 id="name-security-considerations">
 <a href="#section-3" class="section-number selfRef">3. </a><a href="#name-security-considerations" class="section-name selfRef">Security Considerations</a>
       </h2>
-<p id="section-3-1">TODO Security<a href="#section-3-1" class="pilcrow">¶</a></p>
+<p id="section-3-1">Encapsulating DHCPv6 options within TEAP messages inherits the
+security guarantees of the TEAP protocol. Further details on
+mitigation strategies are discussed in <span>[<a href="#RFC7170" class="cite xref">RFC7170</a>]</span>.<a href="#section-3-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="iana-considerations">
@@ -1205,24 +1399,58 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
       <h2 id="name-iana-considerations">
 <a href="#section-4" class="section-number selfRef">4. </a><a href="#name-iana-considerations" class="section-name selfRef">IANA Considerations</a>
       </h2>
-<p id="section-4-1">This document has no IANA actions.<a href="#section-4-1" class="pilcrow">¶</a></p>
+<p id="section-4-1">IANA is requested to assign a new TEAP TLV type value for the DHCPv6
+Options TLV from the TEAP TLV Type registry defined in <span>[<a href="#RFC7170" class="cite xref">RFC7170</a>]</span>.<a href="#section-4-1" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="sec-normative-references">
+<div id="acknowledgements">
 <section id="section-5">
-      <h2 id="name-normative-references">
-<a href="#section-5" class="section-number selfRef">5. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
+      <h2 id="name-acknowledgements">
+<a href="#section-5" class="section-number selfRef">5. </a><a href="#name-acknowledgements" class="section-name selfRef">Acknowledgements</a>
       </h2>
+<p id="section-5-1">The authors hope to thank the members of the IETF EMU Working Group
+for their valuable input and contributions.<a href="#section-5-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="sec-combined-references">
+<section id="section-6">
+      <h2 id="name-references">
+<a href="#section-6" class="section-number selfRef">6. </a><a href="#name-references" class="section-name selfRef">References</a>
+      </h2>
+<div id="sec-normative-references">
+<section id="section-6.1">
+        <h3 id="name-normative-references">
+<a href="#section-6.1" class="section-number selfRef">6.1. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
+        </h3>
 <dl class="references">
-<dt id="RFC2119">[RFC2119]</dt>
-      <dd>
-<span class="refAuthor">Bradner, S.</span>, <span class="refTitle">"Key words for use in RFCs to Indicate Requirement Levels"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 2119</span>, <span class="seriesInfo">DOI 10.17487/RFC2119</span>, <time datetime="1997-03" class="refDate">March 1997</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc2119">https://www.rfc-editor.org/rfc/rfc2119</a>&gt;</span>. </dd>
+<dt id="I-D.ietf-emu-rfc7170bis">[I-D.ietf-emu-rfc7170bis]</dt>
+        <dd>
+<span class="refAuthor">DeKok, A.</span>, <span class="refTitle">"Tunnel Extensible Authentication Protocol (TEAP) Version 1"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-emu-rfc7170bis-22</span>, <time datetime="2025-05-28" class="refDate">28 May 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-emu-rfc7170bis-22">https://datatracker.ietf.org/doc/html/draft-ietf-emu-rfc7170bis-22</a>&gt;</span>. </dd>
 <dd class="break"></dd>
-<dt id="RFC8174">[RFC8174]</dt>
-    <dd>
-<span class="refAuthor">Leiba, B.</span>, <span class="refTitle">"Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 8174</span>, <span class="seriesInfo">DOI 10.17487/RFC8174</span>, <time datetime="2017-05" class="refDate">May 2017</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8174">https://www.rfc-editor.org/rfc/rfc8174</a>&gt;</span>. </dd>
+<dt id="RFC7170">[RFC7170]</dt>
+        <dd>
+<span class="refAuthor">Zhou, H.</span>, <span class="refAuthor">Cam-Winget, N.</span>, <span class="refAuthor">Salowey, J.</span>, and <span class="refAuthor">S. Hanna</span>, <span class="refTitle">"Tunnel Extensible Authentication Protocol (TEAP) Version 1"</span>, <span class="seriesInfo">RFC 7170</span>, <span class="seriesInfo">DOI 10.17487/RFC7170</span>, <time datetime="2014-05" class="refDate">May 2014</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc7170">https://www.rfc-editor.org/rfc/rfc7170</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC8415">[RFC8415]</dt>
+      <dd>
+<span class="refAuthor">Mrugalski, T.</span>, <span class="refAuthor">Siodelski, M.</span>, <span class="refAuthor">Volz, B.</span>, <span class="refAuthor">Yourtchenko, A.</span>, <span class="refAuthor">Richardson, M.</span>, <span class="refAuthor">Jiang, S.</span>, <span class="refAuthor">Lemon, T.</span>, and <span class="refAuthor">T. Winters</span>, <span class="refTitle">"Dynamic Host Configuration Protocol for IPv6 (DHCPv6)"</span>, <span class="seriesInfo">RFC 8415</span>, <span class="seriesInfo">DOI 10.17487/RFC8415</span>, <time datetime="2018-11" class="refDate">November 2018</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8415">https://www.rfc-editor.org/rfc/rfc8415</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 </dl>
+</section>
+</div>
+<div id="sec-informative-references">
+<section id="section-6.2">
+        <h3 id="name-informative-references">
+<a href="#section-6.2" class="section-number selfRef">6.2. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
+        </h3>
+<dl class="references">
+<dt id="RFC9445">[RFC9445]</dt>
+      <dd>
+<span class="refAuthor">Boucadair, M.</span>, <span class="refAuthor">Reddy.K, T.</span>, and <span class="refAuthor">A. DeKok</span>, <span class="refTitle">"RADIUS Extensions for DHCP-Configured Services"</span>, <span class="seriesInfo">RFC 9445</span>, <span class="seriesInfo">DOI 10.17487/RFC9445</span>, <time datetime="2023-08" class="refDate">August 2023</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9445">https://www.rfc-editor.org/rfc/rfc9445</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+</dl>
+</section>
+</div>
 </section>
 </div>
 <div id="acknowledgments">
@@ -1235,15 +1463,31 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
 </div>
 <div id="authors-addresses">
 <section id="appendix-B">
-      <h2 id="name-authors-address">
-<a href="#name-authors-address" class="section-name selfRef">Author's Address</a>
+      <h2 id="name-authors-addresses">
+<a href="#name-authors-addresses" class="section-name selfRef">Authors' Addresses</a>
       </h2>
 <address class="vcard">
         <div dir="auto" class="left"><span class="fn nameRole">Eliot Lear</span></div>
-<div dir="auto" class="left"><span class="org">Your Organization Here</span></div>
+<div dir="auto" class="left"><span class="org">Cisco Ssytes, Inc.</span></div>
+<div dir="auto" class="left"><span class="street-address">Richtistrasse 7</span></div>
+<div dir="auto" class="left">CH-<span class="postal-code">8304</span> <span class="locality">Wallisellen</span>
+</div>
+<div dir="auto" class="left"><span class="country-name">Switzerland</span></div>
+<div class="tel">
+<span>Phone:</span>
+<a href="tel:+41%2044%20878%209200" class="tel">+41 44 878 9200</a>
+</div>
 <div class="email">
 <span>Email:</span>
-<a href="mailto:github@ofcourseimright.com" class="email">github@ofcourseimright.com</a>
+<a href="mailto:lear@cisco.com" class="email">lear@cisco.com</a>
+</div>
+</address>
+<address class="vcard">
+        <div dir="auto" class="left"><span class="fn nameRole">Alan Dekok</span></div>
+<div dir="auto" class="left"><span class="org">InkBridge Networks</span></div>
+<div class="email">
+<span>Email:</span>
+<a href="mailto:aland@deployingradius.com" class="email">aland@deployingradius.com</a>
 </div>
 </address>
 </section>

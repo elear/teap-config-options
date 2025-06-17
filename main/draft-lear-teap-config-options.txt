@@ -3,9 +3,10 @@
 
 
 EMU Working Group                                                E. Lear
-Internet-Draft                                    Your Organization Here
-Intended status: Standards Track                            17 June 2025
-Expires: 19 December 2025
+Internet-Draft                                        Cisco Ssytes, Inc.
+Intended status: Standards Track                                A. Dekok
+Expires: 19 December 2025                             InkBridge Networks
+                                                            17 June 2025
 
 
              New TEAP TLV for Encapsulating DHCPv6 Options
@@ -13,7 +14,11 @@ Expires: 19 December 2025
 
 Abstract
 
-   TODO Abstract
+   This document defines a new Tunneled Extensible Authentication
+   Protocol (TEAP) Type-Length-Value (TLV) to encapsulate DHCPv6
+   (Dynamic Host Configuration Protocol Version 6) options within TEAP
+   authentication exchanges.  This enhancement enables exchange of
+   network configuration parameters after the authentication phase.
 
 About This Document
 
@@ -66,50 +71,201 @@ Copyright Notice
 Table of Contents
 
    1.  Introduction
-   2.  Conventions and Definitions
+     1.1.  Use of both DHCPv6 and TEAP protocols
+   2.  TEAP TLV for DHCPv6 Options
+     2.1.  TLV Format
+     2.2.  DHCPv6 Option Encapsulation
    3.  Security Considerations
    4.  IANA Considerations
-   5.  Normative References
+   5.  Acknowledgements
+   6.  References
+     6.1.  Normative References
+     6.2.  Informative References
    Acknowledgments
-   Author's Address
+   Authors' Addresses
 
 1.  Introduction
 
-   TODO Introduction
+   TEAP (Tunneled Extensible Authentication Protocol), defined in
+   [RFC7170], supports the use of Type-Length-Value (TLV) structures to
+   exchange additional data during the authentication process.  DHCPv6
+   [RFC8415] is widely used for configuration of network parameters.
+   This document introduces a new TLV to encapsulate DHCPv6 options
+   within TEAP messages.
 
-2.  Conventions and Definitions
+   [RFC9445] specifies a way to communicate options to a radius client.
+   This memo specifies a means to communicate options end-to-end between
+   the authentication server and the peer.
 
-   The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
-   "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
-   "OPTIONAL" in this document are to be interpreted as described in
-   BCP 14 [RFC2119] [RFC8174] when, and only when, they appear in all
-   capitals, as shown here.
+   Not all DHCP communications will necessarily make sense in this
+   context.  For instance, a AAA server may only wish to send non-
+   topological options, such as a print server, or next hop
+   configuration URL, and it might not send next-hop router or IP
+   address binding information.
+
+1.1.  Use of both DHCPv6 and TEAP protocols
+
+   Because DHCPv6 is widely deployed, peers implementing this
+   specifciation can expect to receive information via TEAP and DHCPv6.
+   Thereefore, the possibility of a conflict arises.  Clients are not in
+   a good position to determine on their own which information is
+   correct.  Therefore, the following strategy is RECOMMENDED:
+
+   1.  Peers receiving information only via DHCP will use that
+       information.
+
+   2.  Peers receiving DHCP information only via TEAP will use that
+       information.
+
+   3.  Peers receiving overlapping DHCPv6 options SHOULD select TEAP
+       information since it is likely to be better authenticated and
+       unchanged.
+
+   4.  If conflicting information is received by the peer it SHOULD log
+       the conflict as an error and MAY produce an exception.
+
+2.  TEAP TLV for DHCPv6 Options
+
+   Both the TEAP server and TEAP client MAY transmit this TLV during
+   Phase 2, and it MAY be included in a Request Action frame.  The
+   Mandatory bit MUST not be set.  If either side sends this TLV prior
+   to Phase 2, an error TLV of 2002 (Unexpected TLVs Exchanged) be
+   returned with a Result of Status=Failure.  That is, the table in
+   Section 4.3.1 of [I-D.ietf-emu-rfc7170bis] remains unchanged.
+
+   Thus this TLV MAY be used as follows:
+
+        +=========+==========+=========+=========+================+
+        | Request | Response | Success | Failure | TLV            |
+        +=========+==========+=========+=========+================+
+        | 0+      | 0+       | 0+      | 0       | DHCPv6 options |
+        +---------+----------+---------+---------+----------------+
+
+                     Table 1: When is this TLV Allowed
+
+   A TEAP peer or server receiving this TLV SHOULD NOT act on it until
+   the other side has been sufficiently authenticated, but it is not an
+   error to send this TLV in advance of such authentication.  In this
+   way, the TLV can be conveniently piggybacked as part of the
+   authentication prior to a result or intermediate result being
+   generated.
+
+2.1.  TLV Format
+
+   The new TEAP TLV for DHCPv6 options is structured as follows:
+
+       0                   1                   2                   3
+       0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+      |M|R|         TLV Type          |            Length             |
+      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+      |           DHCPv6 fields...
+      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
+
+                     Figure 1: DHCP options TLV format
+
+      M
+
+         0 - Optional TLV
+
+      R
+
+         Reserved, set to zero (0)
+
+      TLV Type
+
+         TBD - DHCPv6 options
+
+      Length
+
+         >=2 octets
+
+2.2.  DHCPv6 Option Encapsulation
+
+   The Value field encapsulates DHCPv6 options exactly as they appear in
+   DHCPv6 messages.  Multiple options can be included, concatenated
+   sequentially, with no padding between them.
+
+   The format adheres to the standard DHCPv6 option encoding, ensuring
+   compatibility with existing DHCPv6 implementations.
+
+   Encapsulating this option in the TLV would look as follows (in
+   hexadecimal):
+
+   Type: 0xXXXX (assigned by IANA)
+   Length: 0x0014
+   Value: 0x00170010FE8000000000000000000000000001
+
+   Where:
+
+   *  Type = 0xXXXX (placeholder for the assigned type value)
+
+   *  Length = 0x0014 (20 bytes for the "Recursive DNS Servers" option,
+      including addresses)
+
+   *  Value = 0x00170010FE8000000000000000000000000001 (DHCPv6 Option 23
+      with an IPv6 address of FE80::1).
 
 3.  Security Considerations
 
-   TODO Security
+   Encapsulating DHCPv6 options within TEAP messages inherits the
+   security guarantees of the TEAP protocol.  Further details on
+   mitigation strategies are discussed in [RFC7170].
 
 4.  IANA Considerations
 
-   This document has no IANA actions.
+   IANA is requested to assign a new TEAP TLV type value for the DHCPv6
+   Options TLV from the TEAP TLV Type registry defined in [RFC7170].
 
-5.  Normative References
+5.  Acknowledgements
 
-   [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
-              Requirement Levels", BCP 14, RFC 2119,
-              DOI 10.17487/RFC2119, March 1997,
-              <https://www.rfc-editor.org/rfc/rfc2119>.
+   The authors hope to thank the members of the IETF EMU Working Group
+   for their valuable input and contributions.
 
-   [RFC8174]  Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC
-              2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
-              May 2017, <https://www.rfc-editor.org/rfc/rfc8174>.
+6.  References
+
+6.1.  Normative References
+
+   [I-D.ietf-emu-rfc7170bis]
+              DeKok, A., "Tunnel Extensible Authentication Protocol
+              (TEAP) Version 1", Work in Progress, Internet-Draft,
+              draft-ietf-emu-rfc7170bis-22, 28 May 2025,
+              <https://datatracker.ietf.org/doc/html/draft-ietf-emu-
+              rfc7170bis-22>.
+
+   [RFC7170]  Zhou, H., Cam-Winget, N., Salowey, J., and S. Hanna,
+              "Tunnel Extensible Authentication Protocol (TEAP) Version
+              1", RFC 7170, DOI 10.17487/RFC7170, May 2014,
+              <https://www.rfc-editor.org/rfc/rfc7170>.
+
+   [RFC8415]  Mrugalski, T., Siodelski, M., Volz, B., Yourtchenko, A.,
+              Richardson, M., Jiang, S., Lemon, T., and T. Winters,
+              "Dynamic Host Configuration Protocol for IPv6 (DHCPv6)",
+              RFC 8415, DOI 10.17487/RFC8415, November 2018,
+              <https://www.rfc-editor.org/rfc/rfc8415>.
+
+6.2.  Informative References
+
+   [RFC9445]  Boucadair, M., Reddy.K, T., and A. DeKok, "RADIUS
+              Extensions for DHCP-Configured Services", RFC 9445,
+              DOI 10.17487/RFC9445, August 2023,
+              <https://www.rfc-editor.org/rfc/rfc9445>.
 
 Acknowledgments
 
    TODO acknowledge.
 
-Author's Address
+Authors' Addresses
 
    Eliot Lear
-   Your Organization Here
-   Email: github@ofcourseimright.com
+   Cisco Ssytes, Inc.
+   Richtistrasse 7
+   CH-8304 Wallisellen
+   Switzerland
+   Phone: +41 44 878 9200
+   Email: lear@cisco.com
+
+
+   Alan Dekok
+   InkBridge Networks
+   Email: aland@deployingradius.com
