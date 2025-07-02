@@ -18,6 +18,7 @@ keyword:
   - TLV
   - DHCP
   - Authentication
+
 venue:
   group: EMU WG
   type: Working Group
@@ -30,7 +31,7 @@ author:
   -
     ins: E. Lear
     name: Eliot Lear
-    org: Cisco Ssytes, Inc.
+    org: Cisco Systems, Inc.
     email: lear@cisco.com
     street: Richtistrasse 7
     code: CH-8304
@@ -42,42 +43,51 @@ author:
     ins: A. Dekok
     name: Alan Dekok
     org: InkBridge Networks
-    email: aland@deployingradius.com
+    email: alan.dekok@inkbridge.io
+
+normative:
+    I-D.ietf-emu-rfc7170bis:
 
 --- abstract
 
 This document defines a new Tunneled Extensible Authentication
 Protocol (TEAP) Type-Length-Value (TLV) to encapsulate DHCPv6 (Dynamic
 Host Configuration Protocol Version 6) options within TEAP
-authentication exchanges. This enhancement enables exchange
-of network configuration parameters after the authentication
-phase.
+authentication exchanges. This enhancement enables exchange of network
+configuration parameters after the authentication phase.
 
 --- middle
 
 # Introduction
 
 TEAP (Tunneled Extensible Authentication Protocol), defined in
-{{!RFC7170}}, supports the use of Type-Length-Value (TLV) structures
+{{I-D.ietf-emu-rfc7170bis}}, supports the use of Type-Length-Value (TLV) structures
 to exchange additional data during the authentication process. DHCPv6
 {{!RFC8415}} is widely used for configuration of network
 parameters. This document introduces a new TLV to encapsulate DHCPv6
 options within TEAP messages.
 
-{{?RFC9445}} specifies a way to communicate options to a radius
-client.  This memo specifies a means to communicate options
-end-to-end between the authentication server and the peer.
+{{?RFC9445}} specifies a way to communicate DHCPv6 options to a RADIUS
+client.  This memo specifies a means to communicate options end-to-end
+between the authentication server and the peer.
 
 Not all DHCP communications will necessarily make sense in this
-context.  For instance, a AAA server may only wish to send
-non-topological options, such as a print server, or next hop
-configuration URL, and it might not send next-hop router or
+context.  For instance, an AAA server may only wish to send
+non-topological options, such as a definitions for a print server, or next hop
+configuration URL.  It might not send next-hop router or
 IP address binding information.
+
+Sending options in a protected and authenticated TLS tunnel also
+authenticates the options, and allows them to be transmitted securely
+from the authentication server to the peer.  While {{!RFC8415, Section
+20}} provides for authentication of DHCP messages, this feature is not
+always used.  Even if the DHCP messages are authenticated, there are
+still benefits to sending options inside of a protected TEAP session.
 
 ## Use of both DHCPv6 and TEAP protocols
 
-Because DHCPv6 is widely deployed, peers implementing this specifciation
-can expect to receive information via TEAP and DHCPv6.  Thereefore, the
+Because DHCPv6 is widely deployed, peers implementing this specification
+can expect to receive information via both TEAP and DHCPv6.  Therefore, the
 possibility of a conflict arises.  Clients are not in a good position to
 determine on their own which information is correct.  Therefore, the
 following strategy is RECOMMENDED:
@@ -89,7 +99,25 @@ following strategy is RECOMMENDED:
 4. If conflicting information is received by the peer it SHOULD log the
    conflict as an error and MAY produce an exception.
 
+In practice, these rules can be applied by a peer initializing a
+result option list by using the options which are received from TEAP,
+and then selectively adding options from DHCP.  Before adding a DHCP
+option, the peer checks (by number) if the option already exists in
+the result option list.  If no matching option exists, it is added.
+If a matching option exists, the values are compared, and a log
+message can be generated.
+
+It is RECOMMENDED that conflict be avoided by having the DHCP server
+send options which control network behavior (address assignment,
+routes, etc).  The TEAP server can then send options which require the
+peer to follow a particular policy.  The detailed list of which
+options fall into which category is site-specific, and out of scope
+of this specification.
+
 # TEAP TLV for DHCPv6 Options
+
+DHCPv6 options are carried within the DHCPv6-Options TLV.  The TLV
+format is defined below.
 
 Both the TEAP server and TEAP client MAY transmit this TLV during
 Phase 2, and it MAY be included in a Request Action frame.  The
@@ -100,9 +128,9 @@ in Section 4.3.1 of {{!I-D.ietf-emu-rfc7170bis}} remains unchanged.
 
 Thus this TLV MAY be used as follows:
 
-| Request | Response | Success | Failure | TLV          |
-|---------|----------|---------|---------|--------------|
-|   0+    |   0+     |  0+     |   0     |DHCPv6 options|
+| Request | Response | Success | Failure | TLV            |
+|---------|----------|---------|---------|----------------|
+|   0-1   |   0-1    |  0-1    |   0     | DHCPv6-Options |
 {: #tabAllowed title="When is this TLV Allowed"}
 
 A TEAP peer or server receiving this TLV SHOULD NOT act on it until
@@ -114,7 +142,8 @@ generated.
 
 ##  TLV Format
 
-The new TEAP TLV for DHCPv6 options is structured as follows:
+The DHCPv6-Options TLV follows the TEAP TLV format from
+{{!I-D.ietf-emu-rfc7170bis, Section 4.2.1}}, and is defined below:
 
 ~~~~~
 
@@ -123,7 +152,7 @@ The new TEAP TLV for DHCPv6 options is structured as follows:
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
    |M|R|         TLV Type          |            Length             |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   |           DHCPv6 fields...
+   |           DHCPv6 options...
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
 
 ~~~~~
@@ -146,27 +175,37 @@ The new TEAP TLV for DHCPv6 options is structured as follows:
 
       >=2 octets
 
+   DHCPv6 options
+
+      This field MUST contain DHCPv6 options, as defined in 
+      {{!RFC8415, Section 21.1}}.
 ~~~~~
 
-## DHCPv6 Option Encapsulation
+### DHCPv6 Option Encapsulation
 
-The Value field encapsulates DHCPv6 options exactly as they appear in
-DHCPv6 messages. Multiple options can be included, concatenated
-sequentially, with no padding between them.
+The TLV Value field encapsulates DHCPv6 options exactly as they appear
+in DHCPv6 messages.  There MUST NOT be more than one DHCPv6-Options
+TLV in a TEAP exchange.  The TEAP TLV format is sufficient to carry
+any number of DHCPv6 options which may be needed.
 
-The format adheres to the standard DHCPv6 option encoding, ensuring compatibility with existing DHCPv6 implementations.
+A party which receives multiple DHCPv6-Options TLVs during a TEAP
+exchange SHOULD process only the first such option, and then ignore
+all remaining ones.
+
+The format adheres to the standard DHCPv6 option encoding, ensuring
+compatibility with existing DHCPv6 implementations.
 
 Encapsulating this option in the TLV would look as follows (in hexadecimal):
 
 ~~~~~
-Type: 0xXXXX (assigned by IANA)
+Type: 0xXXXX (TBD assigned by IANA)
 Length: 0x0014
 Value: 0x00170010FE8000000000000000000000000001
 ~~~~~
 
 Where:
 
-- `Type = 0xXXXX` (placeholder for the assigned type value)
+- `Type = 0xXXXX` (TBD assigned by IANA)
 - `Length = 0x0014` (20 bytes for the "Recursive DNS Servers" option, including addresses)
 - `Value = 0x00170010FE8000000000000000000000000001` (DHCPv6 Option 23 with an IPv6 address of `FE80::1`).
 
@@ -175,13 +214,36 @@ Where:
 
 Encapsulating DHCPv6 options within TEAP messages inherits the
 security guarantees of the TEAP protocol. Further details on
-mitigation strategies are discussed in {{!RFC7170}}.
+mitigation strategies are discussed in {{I-D.ietf-emu-rfc7170bis}}.
+
+Sending DHCPv6 options withing a protected and authenticated TLS
+tunnel provides for additional authentication of those options, and
+for exchanging the options in a secure manner.  While DHCPv6 provides
+for message authentication, that functionality is not always
+available.
+
+This feature also enables better separation of responsibilities.  A
+DHCPv6 server can simply manage address assignment and network
+configuration.  The TEAP authentication server can then manage higher
+level network policies.
+
+## Additional Policy Decisions
+
+DHCP clients can send options which indicate their desired network
+posture.  An authentication server can then make policy decisions
+based on the options, such as placing the device into a different
+VLAN.
+
+## Captive Portals and Provisioning
+
+TEAP provides for unauthenticated access for provisioning.  The
+DHCPv6-Options TLV can be used within a provisioning network without
+issue.
 
 # IANA Considerations
 
 IANA is requested to assign a new TEAP TLV type value for the DHCPv6
-Options TLV from the TEAP TLV Type registry defined in {{!RFC7170}}.
-
+Options TLV from the TEAP TLV Type registry defined in {{I-D.ietf-emu-rfc7170bis}}.
 
 # Acknowledgements
 
