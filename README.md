@@ -1,8 +1,8 @@
-<!-- regenerate: on (set to off if you edit this file) -->
+<!-- regenerate: off (set to off if you edit this file) -->
 
-# TODO - Your title
+# teap config options
 
-This is the working area for the individual Internet-Draft, "TODO - Your title".
+This repository contains a draft to transmit and receive DHCP options via a TEAP TLV.
 
 * [Editor's Copy](https://elear.github.io/teap-config-options/#go.draft-lear-teap-config-options.html)
 * [Datatracker Page](https://datatracker.ietf.org/doc/draft-lear-teap-config-options)
