@@ -177,7 +177,7 @@ The DHCPv6-Options TLV follows the TEAP TLV format from
 
    DHCPv6 options
 
-      This field MUST contain DHCPv6 options, as defined in 
+      This field MUST contain DHCPv6 options, as defined in
       {{!RFC8415, Section 21.1}}.
 ~~~~~
 
