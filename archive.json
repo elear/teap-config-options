@@ -1,0 +1,161 @@
+{
+  "magic": "E!vIA5L86J2I",
+  "timestamp": "2025-07-06T02:07:23.888748+00:00",
+  "repo": "elear/teap-config-options",
+  "labels": [
+    {
+      "name": "bug",
+      "description": "Something isn't working",
+      "color": "d73a4a"
+    },
+    {
+      "name": "documentation",
+      "description": "Improvements or additions to documentation",
+      "color": "0075ca"
+    },
+    {
+      "name": "duplicate",
+      "description": "This issue or pull request already exists",
+      "color": "cfd3d7"
+    },
+    {
+      "name": "enhancement",
+      "description": "New feature or request",
+      "color": "a2eeef"
+    },
+    {
+      "name": "good first issue",
+      "description": "Good for newcomers",
+      "color": "7057ff"
+    },
+    {
+      "name": "help wanted",
+      "description": "Extra attention is needed",
+      "color": "008672"
+    },
+    {
+      "name": "invalid",
+      "description": "This doesn't seem right",
+      "color": "e4e669"
+    },
+    {
+      "name": "question",
+      "description": "Further information is requested",
+      "color": "d876e3"
+    },
+    {
+      "name": "wontfix",
+      "description": "This will not be worked on",
+      "color": "ffffff"
+    }
+  ],
+  "issues": [],
+  "pulls": [
+    {
+      "number": 1,
+      "id": "PR_kwDOO9FscM6a4dcR",
+      "title": "Update draft-lear-teap-config-options.md",
+      "url": "https://github.com/elear/teap-config-options/pull/1",
+      "state": "MERGED",
+      "author": "elear",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "more initialization",
+      "createdAt": "2025-06-17T11:20:31Z",
+      "updatedAt": "2025-06-19T10:42:25Z",
+      "baseRepository": "elear/teap-config-options",
+      "baseRefName": "main",
+      "baseRefOid": "2cebfabe30f829cfa22ff8b9249e143e5c17b796",
+      "headRepository": "elear/teap-config-options",
+      "headRefName": "elear-patch-1",
+      "headRefOid": "e91e740528706d672b42f2eb875d7dd9430bc770",
+      "closedAt": "2025-06-17T11:23:05Z",
+      "mergedAt": "2025-06-17T11:23:04Z",
+      "mergedBy": "elear",
+      "mergeCommit": {
+        "oid": "41b581cb6319545a8093253b401dec0ce0987d0e"
+      },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 2,
+      "id": "PR_kwDOO9FscM6dfBfQ",
+      "title": "tweaks, typos, and text additions",
+      "url": "https://github.com/elear/teap-config-options/pull/2",
+      "state": "MERGED",
+      "author": "alandekok",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Fix some typos, and add more text which explains how it works.",
+      "createdAt": "2025-07-04T18:59:15Z",
+      "updatedAt": "2025-07-05T11:23:59Z",
+      "baseRepository": "elear/teap-config-options",
+      "baseRefName": "main",
+      "baseRefOid": "89561b41afc665c92de978f64ad8a7a6117c761c",
+      "headRepository": "elear/teap-config-options",
+      "headRefName": "alandekok",
+      "headRefOid": "37d7185fdb9204f9a9ff144518b967d3c51ddc71",
+      "closedAt": "2025-07-05T11:23:59Z",
+      "mergedAt": "2025-07-05T11:23:59Z",
+      "mergedBy": "elear",
+      "mergeCommit": {
+        "oid": "7421340778226ffeb303355fb6bf03ff19c0d7d7"
+      },
+      "comments": [
+        {
+          "author": "elear",
+          "authorAssociation": "OWNER",
+          "body": "I'm merging, but I need to fix up some stuff before pushing out the draft.  Trailing whitespace and such.",
+          "createdAt": "2025-07-05T11:23:53Z",
+          "updatedAt": "2025-07-05T11:23:53Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDOO9FscM6yNaRB",
+          "commit": {
+            "abbreviatedOid": "37d7185"
+          },
+          "author": "elear",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-07-05T11:22:04Z",
+          "updatedAt": "2025-07-05T11:22:04Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 3,
+      "id": "PR_kwDOO9FscM6djH0g",
+      "title": "fix ws",
+      "url": "https://github.com/elear/teap-config-options/pull/3",
+      "state": "MERGED",
+      "author": "elear",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "as such",
+      "createdAt": "2025-07-05T11:26:50Z",
+      "updatedAt": "2025-07-05T11:27:15Z",
+      "baseRepository": "elear/teap-config-options",
+      "baseRefName": "main",
+      "baseRefOid": "7421340778226ffeb303355fb6bf03ff19c0d7d7",
+      "headRepository": "elear/teap-config-options",
+      "headRefName": "fixws",
+      "headRefOid": "978458893b4cc0143d41edbc3007a6b74a4fb74d",
+      "closedAt": "2025-07-05T11:27:15Z",
+      "mergedAt": "2025-07-05T11:27:15Z",
+      "mergedBy": "elear",
+      "mergeCommit": {
+        "oid": "97f0f7548c40328b9e54a9d034671b80b49076bf"
+      },
+      "comments": [],
+      "reviews": []
+    }
+  ]
+}
